@@ -8,7 +8,13 @@ Set the phone between the two players. Each half faces one player.
 
 - **Tap** the left side of your half to lose 1 life, or the right side to gain 1.
 - **Hold** either side to keep counting. After a couple of seconds it counts by 5.
-- **✦ button** in the corner of your half: changes your background. There are six themes to cycle through.
+- **✦ button** in the corner of your half: changes your background. There are two per color of mana, plus one colorless:
+  - White: Radiance, Sanctum
+  - Blue: Tide, Astral
+  - Black: Shadow, Bog
+  - Red: Ember, Storm
+  - Green: Grove, Canopy
+  - Colorless: Aether
 - **↺** (left of the center bar): tap it twice to start a new game.
 - **Medallion** (center): set the starting life (10 / 20 / 30 / 40), start a new game, or pick who goes first.
 - **Coin** (right of the center bar): randomly picks who goes first.
