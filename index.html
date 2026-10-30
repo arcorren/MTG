@@ -181,7 +181,6 @@
   .chips button.on { border-color: #e8c675; background: #3a2d1a; color: #fff; box-shadow: 0 0 10px rgba(232,198,117,.35); }
   .sheet .wide { display: block; width: 100%; margin-top: 10px; }
   .sheet .primary { background: linear-gradient(#5c4320, #3a2a12); border-color: #e8c675; color: #fff; font-weight: 700; }
-  .sheet .diag { margin-top: 6px; font: 10px/1.4 ui-monospace, monospace; opacity: .35; letter-spacing: 0; }
   .sheet .close { margin-top: 14px; background: none; border: none; opacity: .6; font-size: 13px; }
 </style>
 </head>
@@ -217,7 +216,6 @@
     <button class="wide primary" id="newGame">New Game</button>
     <button class="wide" id="coin">Who Goes First?</button>
     <button class="close" id="closeMenu">Close</button>
-    <div class="diag" id="diag"></div>
   </div>
 </div>
 
@@ -499,7 +497,6 @@
     ];
   })();
 
-  const VERSION = "v12";
   const STORE = "mtg-life-v1";
   const state = Object.assign({ start: 20, life: [20, 20], theme: [6, 2] },
     (() => { try { return JSON.parse(localStorage.getItem(STORE)) || {}; } catch { return {}; } })());
@@ -630,13 +627,7 @@
     return insets;
   };
 
-  // Screen measurements, to diagnose layout gaps on a real phone.
-  const diag = () => {
-    const a = document.querySelector(".app").getBoundingClientRect(), sa = safeInsets();
-    document.getElementById("diag").textContent =
-      `${VERSION} · win ${innerHeight} · screen ${screen.height} · vv ${Math.round(visualViewport?.height ?? 0)} · app ${Math.round(a.height)} · safe ${sa.top}/${sa.bottom} · ${navigator.standalone ? "home" : "web"}`;
-  };
-  document.getElementById("menuBtn").onclick = () => { syncChips(); diag(); menu.classList.add("open"); };
+  document.getElementById("menuBtn").onclick = () => { syncChips(); menu.classList.add("open"); };
   document.getElementById("closeMenu").onclick = () => menu.classList.remove("open");
   menu.onclick = e => { if (e.target === menu) menu.classList.remove("open"); };
   chips.forEach(c => c.onclick = () => { state.start = +c.dataset.v; syncChips(); save(); });
