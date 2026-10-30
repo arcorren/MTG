@@ -44,12 +44,12 @@
   .art { background: var(--art) center / cover no-repeat; }
   .fx { inset: -25%; background: var(--fx) center / cover no-repeat; transform-origin: var(--fx-origin, 50% 50%); animation: var(--fx-anim, none); will-change: transform, opacity; }
   .grain { opacity: .09; mix-blend-mode: overlay; background-size: 160px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E"); }
-  @keyframes sway { from { transform: rotate(-5deg) } to { transform: rotate(5deg) } }
-  @keyframes drift-x { from { transform: translateX(-7%) } to { transform: translateX(7%) } }
-  @keyframes drift-up { from { transform: translateY(7%) } to { transform: translateY(-7%) } }
-  @keyframes wander { from { transform: translate(-5%, 3%) scale(1.05) } to { transform: translate(5%, -3%) scale(1) } }
-  @keyframes breathe { from { opacity: .35 } to { opacity: 1 } }
-  @keyframes sheen { from { transform: translateX(-35%) } to { transform: translateX(35%) } }
+  @keyframes sway { from { transform: rotate(-1.5deg) } to { transform: rotate(1.5deg) } }
+  @keyframes drift-x { from { transform: translateX(-2.5%) } to { transform: translateX(2.5%) } }
+  @keyframes drift-up { from { transform: translateY(2.5%) } to { transform: translateY(-2.5%) } }
+  @keyframes wander { from { transform: translate(-2%, 1%) } to { transform: translate(2%, -1%) } }
+  @keyframes breathe { from { opacity: .6 } to { opacity: .9 } }
+  @keyframes sheen { 0% { transform: translateX(-60%) } 18%, 100% { transform: translateX(60%) } }
   @media (prefers-reduced-motion: reduce) { .fx, .motes span { animation: none !important; } }
   .vignette { background: radial-gradient(ellipse at center, transparent 35%, rgba(0,0,0,.55) 100%); }
   .motes span {
@@ -57,10 +57,10 @@
     border-radius: 50%; background: var(--mote); box-shadow: 0 0 8px 2px var(--mote);
     opacity: 0; animation: var(--mote-anim, rise) var(--d) linear var(--delay) infinite;
   }
-  @keyframes rise { 0% { transform: translate(0,0); opacity: 0 } 10% { opacity: .9 } 100% { transform: translate(var(--drift), -120vh); opacity: 0 } }
-  @keyframes fall { 0% { transform: translate(0,-115vh) rotate(0); opacity: 0 } 10% { opacity: .8 } 100% { transform: translate(var(--drift), 0) rotate(260deg); opacity: 0 } }
-  @keyframes drift { 0%,100% { transform: translate(0,-30vh); opacity: 0 } 50% { transform: translate(var(--drift),-50vh); opacity: .7 } }
-  @keyframes twinkle { 0%,100% { transform: translateY(-60vh) scale(.4); opacity: 0 } 50% { transform: translateY(-60vh) scale(1); opacity: .9 } }
+  @keyframes rise { 0% { transform: translate(0,-10vh); opacity: 0 } 6% { opacity: .55 } 25% { transform: translate(var(--drift), -45vh); opacity: 0 } 100% { transform: translate(var(--drift), -45vh); opacity: 0 } }
+  @keyframes fall { 0% { transform: translate(0,-60vh); opacity: 0 } 6% { opacity: .5 } 25% { transform: translate(var(--drift), -25vh); opacity: 0 } 100% { opacity: 0 } }
+  @keyframes drift { 0%,30%,100% { transform: translate(0,-25vh); opacity: 0 } 15% { transform: translate(var(--drift),-32vh); opacity: .55 } }
+  @keyframes twinkle { 0%,24%,100% { transform: translateY(-35vh) scale(.4); opacity: 0 } 12% { transform: translateY(-35vh) scale(1); opacity: .7 } }
 
   /* Ornate frame */
   .frame {
@@ -100,17 +100,15 @@
   .delta.show { opacity: 1; transform: none; }
 
   /* Tap zones */
-  .zone { position: absolute; top: 0; bottom: 0; width: 50%; display: flex; align-items: center; }
-  .zone.minus { left: 0; justify-content: flex-start; padding-left: 9%; }
-  .zone.plus { right: 0; justify-content: flex-end; padding-right: 9%; }
+  .zone { position: absolute; top: 22%; bottom: 22%; width: 30%; display: flex; align-items: center; justify-content: center; touch-action: none; }
+  .zone.minus { left: 4%; }
+  .zone.plus { right: 4%; }
   .zone .glyph {
     font-size: 54px; font-weight: 500; opacity: .65; line-height: 1; transition: opacity .15s, transform .15s;
     text-shadow: 0 0 12px var(--glow), 0 1px 4px rgba(0,0,0,.5);
   }
   .zone.active .glyph { opacity: 1; transform: scale(1.2); }
-  .zone::after { content: ""; position: absolute; inset: 0; background: radial-gradient(circle at var(--cx, 50%) 50%, color-mix(in srgb, var(--glow) 30%, transparent), transparent 60%); opacity: 0; transition: opacity .3s; }
-  .zone.minus::after { --cx: 20%; }
-  .zone.plus::after { --cx: 80%; }
+  .zone::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle, color-mix(in srgb, var(--glow) 30%, transparent), transparent 65%); opacity: 0; transition: opacity .3s; }
   .zone.active::after { opacity: 1; transition: opacity .05s; }
 
   .cycle {
@@ -139,7 +137,7 @@
   }
   .bar::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: linear-gradient(90deg, transparent, #c9a45c 20%, #c9a45c 80%, transparent); opacity: .5; }
   .bar button {
-    position: relative; background: #111; border: 1px solid #5a4a2e; color: #e8d3a2; border-radius: 50%;
+    position: relative; touch-action: manipulation; background: #111; border: 1px solid #5a4a2e; color: #e8d3a2; border-radius: 50%;
     width: 42px; height: 42px; display: grid; place-items: center; padding: 0; cursor: pointer;
   }
   .bar button svg { width: 22px; height: 22px; }
@@ -319,7 +317,7 @@
         fx: scene(`<g filter='url(#rb)'>${range(15).map(i => { const a = (40 + i * 7.2) * Math.PI / 180, s = .018 + (i % 3) * .008;
             return `<polygon points='200,50 ${200 + 700 * Math.cos(a - s)},${50 + 700 * Math.sin(a - s)} ${200 + 700 * Math.cos(a + s)},${50 + 700 * Math.sin(a + s)}' fill='url(#ray)' opacity='${.35 + (i % 4) * .15}'/>`; }).join("")}</g>`,
           `${grad("ray", [[0, "#fff", .45], [.6, "#fff", .04], [1, "#fff", 0]])}${blur("rb", 2.5)}`),
-        fxAnim: "sway 16s ease-in-out infinite alternate", fxOrigin: "50% 30%" },
+        fxAnim: "sway 40s ease-in-out infinite alternate", fxOrigin: "50% 30%" },
 
       { name: "Tide",
         bg: "linear-gradient(180deg, #0b3a63 0%, #0a4f80 35%, #083a60 70%, #041a30 100%)",
@@ -330,7 +328,7 @@
           blur("b", 7)),
         fx: scene(`<rect width='400' height='400' filter='url(#c)' mask='url(#m)'/>`,
           `${cloud("c", ".018 .045", 2, [.75, .93, 1], 3.2, -1.6, 7)}${grad("mg", [[0, "#fff", 1], [.55, "#fff", .25], [.8, "#fff", 0]])}<mask id='m'><rect width='400' height='400' fill='url(#mg)'/></mask>`),
-        fxAnim: "drift-x 14s ease-in-out infinite alternate" },
+        fxAnim: "drift-x 40s ease-in-out infinite alternate" },
 
       { name: "Shadow",
         bg: "radial-gradient(ellipse at 70% 15%, #2e1a44 0%, #170d24 45%, #07050c 100%)",
@@ -343,7 +341,7 @@
           `<mask id='cres'><circle cx='300' cy='88' r='31' fill='#fff'/><circle cx='287' cy='80' r='27' fill='#000'/></mask><radialGradient id='mg'><stop offset='0' stop-color='#c9a2ff' stop-opacity='.35'/><stop offset='1' stop-color='#c9a2ff' stop-opacity='0'/></radialGradient>`)),
         fx: scene(`<rect width='400' height='400' filter='url(#n1)' opacity='.85'/><rect width='400' height='400' filter='url(#n2)' opacity='.5'/>`,
           cloud("n1", ".007", 4, [.55, .25, .85], 2.4, -1.05, 3) + cloud("n2", ".011", 4, [.9, .35, .65], 2.6, -1.3, 9)),
-        fxAnim: "wander 30s ease-in-out infinite alternate" },
+        fxAnim: "wander 60s ease-in-out infinite alternate" },
 
       { name: "Ember",
         bg: "radial-gradient(ellipse at 50% 100%, #c0391a 0%, #7a160e 40%, #3a0807 75%, #170303 100%)",
@@ -360,7 +358,7 @@
            ${ridge(r, 372, 22, 16, "#0c0202", .97)}`,
           blur("b", 26) + blur("g", 3))),
         fx: scene(`<rect width='400' height='400' filter='url(#s)'/>`, cloud("s", ".01 .022", 4, [.08, .02, .02], 2.2, -.95, 5)),
-        fxAnim: "drift-up 18s ease-in-out infinite alternate" },
+        fxAnim: "drift-up 40s ease-in-out infinite alternate" },
 
       { name: "Grove",
         bg: "radial-gradient(ellipse at 30% 0%, #8cc66a 0%, #3c7a34 35%, #1a4320 70%, #0a1f0d 100%)",
@@ -374,7 +372,7 @@
           grad("fog", [[0, "#dfffd0", 0], [.5, "#dfffd0", .14], [1, "#dfffd0", 0]]))),
         fx: scene(`<g filter='url(#b)'>${[[60, 26], [120, 18], [175, 30], [245, 16]].map(([x, w], i) =>
             `<polygon points='${x},40 ${x + w},40 ${x + w + 160},420 ${x + 100},420' fill='#f4ffd8' opacity='${.12 + (i % 2) * .05}'/>`).join("")}</g>`, blur("b", 6)),
-        fxAnim: "breathe 7s ease-in-out infinite alternate" },
+        fxAnim: "breathe 20s ease-in-out infinite alternate" },
 
       { name: "Aether",
         bg: "radial-gradient(ellipse at 50% 45%, #4a525f 0%, #2a2f39 50%, #14171d 100%)",
@@ -388,7 +386,7 @@
            ${shard(20, -5, 90, 20, 10, -1)}${shard(54, -5, 60, 14, -6, -1)}${shard(360, -5, 100, 22, -12, -1)}${shard(392, -5, 64, 16, 6, -1)}`),
         fx: scene(`<rect x='-200' y='-200' width='800' height='800' fill='url(#sh)' transform='rotate(25 200 200)'/>`,
           grad("sh", [[.35, "#fff", 0], [.45, "#ffb3e6", .1], [.5, "#b3f0ff", .14], [.55, "#fff3b3", .1], [.65, "#fff", 0]], [0, 0, 1, 0])),
-        fxAnim: "sheen 11s ease-in-out infinite alternate" },
+        fxAnim: "sheen 30s ease-in-out infinite" },
     ];
   })();
 
@@ -404,9 +402,9 @@
   panels.forEach((panel, p) => {
     panel.appendChild(tpl.content.cloneNode(true));
     const motes = panel.querySelector(".motes");
-    for (let i = 0; i < 18; i++) {
+    for (let i = 0; i < 7; i++) {
       const m = document.createElement("span");
-      m.style.cssText = `--x:${Math.random()*100}%;--s:${2+Math.random()*4}px;--d:${7+Math.random()*9}s;--delay:${-Math.random()*16}s;--drift:${(Math.random()-.5)*80}px`;
+      m.style.cssText = `--x:${Math.random()*100}%;--s:${2+Math.random()*2.5}px;--d:${24+Math.random()*24}s;--delay:${-Math.random()*48}s;--drift:${(Math.random()-.5)*50}px`;
       motes.appendChild(m);
     }
     applyTheme(p);
@@ -527,6 +525,16 @@
     resetBtn.style.borderColor = "#ff6a4a"; buzz(20);
     resetArmed = setTimeout(() => { resetArmed = null; resetBtn.style.borderColor = ""; }, 1800);
   };
+
+  // ---------- No zooming: iOS ignores user-scalable=no, so block it directly ----------
+  panels.forEach(el => el.addEventListener("touchstart", e => { if (!e.target.closest(".cycle")) e.preventDefault(); }, { passive: false }));
+  let lastTouchEnd = 0;
+  document.addEventListener("touchend", e => {
+    const now = Date.now();
+    if (now - lastTouchEnd < 350 && !e.target.closest("button, .menu")) e.preventDefault();
+    lastTouchEnd = now;
+  }, { passive: false });
+  ["gesturestart", "gesturechange", "dblclick"].forEach(t => document.addEventListener(t, e => e.preventDefault(), { passive: false }));
 
   // ---------- Keep the screen awake during a game ----------
   let wakeLock = null;
