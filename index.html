@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#0b0a10">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="Life">
 <title>Life Counter</title>
 <link rel="manifest" href="manifest.webmanifest">
@@ -26,11 +26,6 @@
     overscroll-behavior: none;
     -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
     touch-action: manipulation; font-family: var(--serif);
-  }
-  /* iOS 26 bug (WebKit 301108): with a translucent status bar, home-screen apps get a window shorter than the
-     screen by the status bar height. A page at least screen-tall makes iOS hand over the full window. */
-  @media (display-mode: standalone), (display-mode: fullscreen) {
-    html { min-height: min(100lvh, calc(100% + env(safe-area-inset-top))); }
   }
   .app {
     position: fixed; top: 0; left: 0; right: 0; height: var(--app-h, 100%); display: flex; flex-direction: column;
@@ -504,7 +499,7 @@
     ];
   })();
 
-  const VERSION = "v11";
+  const VERSION = "v12";
   const STORE = "mtg-life-v1";
   const state = Object.assign({ start: 20, life: [20, 20], theme: [6, 2] },
     (() => { try { return JSON.parse(localStorage.getItem(STORE)) || {}; } catch { return {}; } })());
@@ -626,15 +621,20 @@
     tick();
   };
 
-  // Screen measurements, to diagnose layout gaps on a real phone.
-  const diag = () => {
+  const safeInsets = () => {
     const probe = document.createElement("div");
     probe.style.cssText = "position:fixed;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)";
     document.body.appendChild(probe);
-    const cs = getComputedStyle(probe), a = document.querySelector(".app").getBoundingClientRect();
-    document.getElementById("diag").textContent =
-      `${VERSION} · win ${innerHeight} · screen ${screen.height} · vv ${Math.round(visualViewport?.height ?? 0)} · app ${Math.round(a.height)} · safe ${parseInt(cs.paddingTop)}/${parseInt(cs.paddingBottom)} · ${navigator.standalone ? "home" : "web"}`;
+    const cs = getComputedStyle(probe), insets = { top: parseInt(cs.paddingTop) || 0, bottom: parseInt(cs.paddingBottom) || 0 };
     probe.remove();
+    return insets;
+  };
+
+  // Screen measurements, to diagnose layout gaps on a real phone.
+  const diag = () => {
+    const a = document.querySelector(".app").getBoundingClientRect(), sa = safeInsets();
+    document.getElementById("diag").textContent =
+      `${VERSION} · win ${innerHeight} · screen ${screen.height} · vv ${Math.round(visualViewport?.height ?? 0)} · app ${Math.round(a.height)} · safe ${sa.top}/${sa.bottom} · ${navigator.standalone ? "home" : "web"}`;
   };
   document.getElementById("menuBtn").onclick = () => { syncChips(); diag(); menu.classList.add("open"); };
   document.getElementById("closeMenu").onclick = () => menu.classList.remove("open");
@@ -667,14 +667,15 @@
   ["gesturestart", "gesturechange", "dblclick"].forEach(t => document.addEventListener(t, e => e.preventDefault(), { passive: false }));
 
   // ---------- Fit the window iOS actually gives us ----------
-  // Some iOS versions give home-screen apps a window that stops short of the screen bottom (by the status
-  // bar height). Nothing can be drawn below it, so fit inside it and drop the home-indicator padding.
+  // Installs from before the opaque status bar can still get iOS 26's short window: drawn under the status bar
+  // but stopping above the screen bottom. Fit inside it and drop the home-indicator padding there.
   const app = document.querySelector(".app");
   const fit = () => {
     const standalone = navigator.standalone || matchMedia("(display-mode: standalone), (display-mode: fullscreen)").matches;
     const screenH = innerWidth > innerHeight ? Math.min(screen.width, screen.height) : Math.max(screen.width, screen.height);
     app.style.setProperty("--app-h", innerHeight + "px");
-    app.style.setProperty("--edge-bottom", standalone && screenH - innerHeight > 20 ? "0px" : "env(safe-area-inset-bottom, 0px)");
+    const short = standalone && safeInsets().top > 0 && screenH - innerHeight > 20;
+    app.style.setProperty("--edge-bottom", short ? "0px" : "env(safe-area-inset-bottom, 0px)");
   };
   fit();
   addEventListener("resize", fit);
