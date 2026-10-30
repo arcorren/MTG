@@ -10,7 +10,7 @@ Set the phone between the two players. Each half faces one player.
 - **Hold** either side to keep counting. After a couple of seconds it counts by 5.
 - **✦ button** in the corner of your half: changes your background. There are six themes to cycle through.
 - **↺** (left of the center bar): tap it twice to start a new game.
-- **Medallion** (center): set the starting life (20 / 30 / 40), start a new game, or pick who goes first.
+- **Medallion** (center): set the starting life (10 / 20 / 30 / 40), start a new game, or pick who goes first.
 - **Coin** (right of the center bar): randomly picks who goes first.
 
 Life totals and backgrounds are saved, so closing the app won't lose your game. The screen stays on while you play, on phones that support it.
