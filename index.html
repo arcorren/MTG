@@ -32,7 +32,7 @@
     position: fixed; top: 0; left: 0; right: 0; height: var(--app-h, 100%); display: flex; flex-direction: column;
     padding: 0 env(safe-area-inset-right) 0 env(safe-area-inset-left);
   }
-  .panel { --edge: env(safe-area-inset-bottom, 0px); }
+  .panel { --edge: var(--edge-bottom, env(safe-area-inset-bottom, 0px)); }
   .panel.flipped { --edge: env(safe-area-inset-top, 0px); }
   .panel .frame { bottom: calc(7px + var(--edge)); }
   .panel .center { bottom: var(--edge); }
@@ -658,13 +658,15 @@
   }, { passive: false });
   ["gesturestart", "gesturechange", "dblclick"].forEach(t => document.addEventListener(t, e => e.preventDefault(), { passive: false }));
 
-  // ---------- Fill the whole screen ----------
-  // As a home-screen app, iOS can report a viewport shorter than the screen, leaving a gap at the bottom.
+  // ---------- Fit the window iOS actually gives us ----------
+  // Some iOS versions give home-screen apps a window that stops short of the screen bottom (by the status
+  // bar height). Nothing can be drawn below it, so fit inside it and drop the home-indicator padding.
   const app = document.querySelector(".app");
   const fit = () => {
     const standalone = navigator.standalone || matchMedia("(display-mode: standalone), (display-mode: fullscreen)").matches;
     const screenH = innerWidth > innerHeight ? Math.min(screen.width, screen.height) : Math.max(screen.width, screen.height);
-    app.style.setProperty("--app-h", (standalone ? Math.max(innerHeight, screenH) : innerHeight) + "px");
+    app.style.setProperty("--app-h", innerHeight + "px");
+    app.style.setProperty("--edge-bottom", standalone && screenH - innerHeight > 20 ? "0px" : "env(safe-area-inset-bottom, 0px)");
   };
   fit();
   addEventListener("resize", fit);
