@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <radialGradient id="ember" cx="50%" cy="0%" r="110%">
+      <stop offset="0" stop-color="#ffb347"/><stop offset=".35" stop-color="#e8421b"/><stop offset=".8" stop-color="#7a120e"/><stop offset="1" stop-color="#2a0606"/>
+    </radialGradient>
+    <radialGradient id="tide" cx="50%" cy="100%" r="110%">
+      <stop offset="0" stop-color="#2fb4ff"/><stop offset=".35" stop-color="#0d5f9a"/><stop offset=".8" stop-color="#0a2a4a"/><stop offset="1" stop-color="#050f1c"/>
+    </radialGradient>
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="8"/></filter>
+    <pattern id="waves" width="64" height="32" patternUnits="userSpaceOnUse">
+      <path d="M0 16 Q8 6 16 16 T32 16 T48 16 T64 16" fill="none" stroke="#bfe9ff" stroke-width="1.5" opacity=".25"/>
+    </pattern>
+    <pattern id="flames" width="70" height="70" patternUnits="userSpaceOnUse">
+      <path d="M35 60 C22 50 27 38 32 30 C32 38 38 40 38 33 C38 26 34 20 35 10 C45 21 50 33 46 45 C43 53 39 58 35 60z" fill="none" stroke="#fff" stroke-width="1.3" opacity=".18"/>
+    </pattern>
+  </defs>
+  <rect width="512" height="256" fill="url(#ember)"/>
+  <rect width="512" height="256" fill="url(#flames)"/>
+  <rect y="256" width="512" height="256" fill="url(#tide)"/>
+  <rect y="256" width="512" height="256" fill="url(#waves)"/>
+  <g font-family="Cinzel Decorative, Cinzel, serif" font-weight="900" font-size="124" text-anchor="middle">
+    <g transform="rotate(180 256 128)">
+      <text x="256" y="172" fill="#ff7a3a" filter="url(#glow)">20</text>
+      <text x="256" y="172" fill="#fff4e6">20</text>
+    </g>
+    <text x="256" y="428" fill="#3ab6ff" filter="url(#glow)">20</text>
+    <text x="256" y="428" fill="#eef9ff">20</text>
+  </g>
+  <rect y="246" width="512" height="20" fill="#0b0a10"/>
+  <path d="M0 256 H512" stroke="#e8c675" stroke-width="3"/>
+  <circle cx="256" cy="256" r="40" fill="#120e18" stroke="#e8c675" stroke-width="6"/>
+  <path d="M256 228 L280 256 L256 284 L232 256 Z" fill="#e8c675" fill-opacity=".25" stroke="#e8c675" stroke-width="4" stroke-linejoin="round"/>
+  <circle cx="256" cy="256" r="6" fill="#e8c675"/>
+</svg>

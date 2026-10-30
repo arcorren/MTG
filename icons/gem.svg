@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="42%" r="78%">
+      <stop offset="0" stop-color="#34235a"/><stop offset=".55" stop-color="#140d27"/><stop offset="1" stop-color="#05040b"/>
+    </radialGradient>
+    <radialGradient id="halo" r="50%">
+      <stop offset="0" stop-color="#c9a2ff" stop-opacity=".6"/><stop offset=".6" stop-color="#7a4cff" stop-opacity=".15"/><stop offset="1" stop-color="#7a4cff" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="core" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#d9c6ff"/>
+    </linearGradient>
+    <linearGradient id="sheen" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fff" stop-opacity=".45"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="10"/></filter>
+  </defs>
+  <rect width="512" height="512" fill="url(#bg)"/>
+  <circle cx="256" cy="256" r="210" fill="url(#halo)"/>
+  <!-- arcane ring -->
+  <g fill="none" stroke="#e8c675">
+    <circle cx="256" cy="256" r="196" stroke-width="3"/>
+    <circle cx="256" cy="256" r="182" stroke-width="1.2" opacity=".55"/>
+    <circle cx="256" cy="256" r="189" stroke-width="8" stroke-dasharray="1.5 13" opacity=".7"/>
+  </g>
+  <g fill="#e8c675">
+    <path d="M256 50 l8 10 -8 10 -8 -10z"/><path d="M256 442 l8 10 -8 10 -8 -10z"/>
+    <path d="M50 256 l10 -8 10 8 -10 8z"/><path d="M442 256 l10 -8 10 8 -10 8z"/>
+  </g>
+  <!-- glow behind gem -->
+  <polygon points="256,124 370,190 370,322 256,388 142,322 142,190" fill="#b07cff" opacity=".7" filter="url(#glow)"/>
+  <!-- faceted gem -->
+  <g stroke="#fff" stroke-opacity=".55" stroke-width="2" stroke-linejoin="round">
+    <polygon points="142,190 256,124 256,196" fill="#ffe9a8"/>
+    <polygon points="256,124 370,190 256,196" fill="#ffc861"/>
+    <polygon points="370,190 318,300 256,196" fill="#6fd3ff"/>
+    <polygon points="370,190 370,322 318,300" fill="#2c8fd6"/>
+    <polygon points="370,322 256,388 318,300" fill="#3d3aa8"/>
+    <polygon points="256,388 194,300 318,300" fill="#6a2fb0"/>
+    <polygon points="256,388 142,322 194,300" fill="#9b1f5c"/>
+    <polygon points="142,322 142,190 194,300" fill="#e2453a"/>
+    <polygon points="142,190 256,196 194,300" fill="#ff8a4c"/>
+    <polygon points="256,196 318,300 194,300" fill="url(#core)"/>
+  </g>
+  <polygon points="256,124 370,190 370,322 256,388 142,322 142,190" fill="url(#sheen)"/>
+  <polygon points="256,124 370,190 370,322 256,388 142,322 142,190" fill="none" stroke="#fff3cf" stroke-width="3" stroke-linejoin="round"/>
+  <!-- sparkles -->
+  <g fill="#fff">
+    <path d="M362 128 l4 14 14 4 -14 4 -4 14 -4 -14 -14 -4 14 -4z"/>
+    <path d="M150 380 l2.5 8 8 2.5 -8 2.5 -2.5 8 -2.5 -8 -8 -2.5 8 -2.5z" opacity=".8"/>
+  </g>
+</svg>

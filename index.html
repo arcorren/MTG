@@ -69,7 +69,6 @@
 
   /* Life display */
   .center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; }
-  .theme-name { font-size: 12px; letter-spacing: .35em; text-transform: uppercase; opacity: .85; margin-bottom: -4px; text-shadow: 0 1px 2px rgba(0,0,0,.55), 0 1px 8px rgba(0,0,0,.5); }
   .life {
     font-family: var(--display); font-weight: 900; line-height: 1;
     font-size: min(34vw, 26dvh); font-variant-numeric: tabular-nums;
@@ -105,9 +104,14 @@
   .zone.plus::after { --cx: 80%; }
   .zone.active::after { opacity: 1; transition: opacity .05s; }
 
-  .dots { position: absolute; bottom: 22px; left: 0; right: 0; display: flex; justify-content: center; gap: 8px; pointer-events: none; }
-  .dots i { width: 7px; height: 7px; border-radius: 50%; background: var(--ink); opacity: .3; transition: opacity .3s, transform .3s; }
-  .dots i.on { opacity: .95; transform: scale(1.3); box-shadow: 0 0 6px var(--glow); }
+  .cycle {
+    position: absolute; right: 26px; bottom: 26px; z-index: 3; width: 44px; height: 44px; padding: 0;
+    display: grid; place-items: center; border-radius: 50%; cursor: pointer;
+    color: var(--accent); background: rgba(0,0,0,.28); border: 1px solid color-mix(in srgb, var(--accent) 60%, transparent);
+    box-shadow: 0 0 10px color-mix(in srgb, var(--glow) 35%, transparent); transition: transform .2s, color .6s, border-color .6s;
+  }
+  .cycle svg { width: 22px; height: 22px; filter: drop-shadow(0 0 3px var(--glow)); }
+  .cycle:active { transform: scale(.9) rotate(-30deg); }
 
   .first-badge {
     position: absolute; top: 26px; left: 50%; transform: translateX(-50%) scale(.8);
@@ -116,8 +120,6 @@
   }
   .panel.first .first-badge { opacity: 1; transform: translateX(-50%) scale(1); }
 
-  .hint { position: absolute; bottom: 38px; width: 100%; text-align: center; font-size: 11px; letter-spacing: .2em; opacity: 0; pointer-events: none; transition: opacity .6s; }
-  .show-hints .hint { opacity: .55; }
 
   /* ---------- Center bar ---------- */
   .bar {
@@ -167,7 +169,7 @@
 </style>
 </head>
 <body>
-<div class="app show-hints" id="app">
+<div class="app">
   <section class="panel flipped" data-player="1"></section>
   <div class="bar">
     <button id="resetBtn" aria-label="New game">
@@ -232,15 +234,15 @@
     </svg>
   </div>
   <div class="center">
-    <div class="theme-name"></div>
     <div class="life">20</div>
   </div>
   <div class="delta"></div>
   <div class="zone minus"><span class="glyph">−</span></div>
   <div class="zone plus"><span class="glyph">+</span></div>
   <div class="first-badge">GOES FIRST</div>
-  <div class="hint">‹ SWIPE FOR NEW REALM ›</div>
-  <div class="dots"></div>
+  <button class="cycle" aria-label="Change background">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M12 2.5l2.2 6.3 6.3 2.2-6.3 2.2L12 19.5l-2.2-6.3L3.5 11l6.3-2.2z"/><path d="M19 16.5l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z" fill="currentColor" stroke="none"/></svg>
+  </button>
 </template>
 
 <script>
@@ -280,7 +282,6 @@
     (() => { try { return JSON.parse(localStorage.getItem(STORE)) || {}; } catch { return {}; } })());
   const save = () => { try { localStorage.setItem(STORE, JSON.stringify(state)); } catch {} };
 
-  const app = document.getElementById("app");
   const tpl = document.getElementById("panelTpl");
   const panels = [...document.querySelectorAll(".panel")].sort((a, b) => a.dataset.player - b.dataset.player);
   const buzz = ms => navigator.vibrate && navigator.vibrate(ms);
@@ -293,7 +294,6 @@
       m.style.cssText = `--x:${Math.random()*100}%;--s:${2+Math.random()*4}px;--d:${7+Math.random()*9}s;--delay:${-Math.random()*16}s;--drift:${(Math.random()-.5)*80}px`;
       motes.appendChild(m);
     }
-    panel.querySelector(".dots").innerHTML = THEMES.map(() => "<i></i>").join("");
     applyTheme(p);
     render(p);
     wire(panel, p);
@@ -304,8 +304,6 @@
     Object.entries({ "--bg": t.bg, "--ink": t.ink, "--accent": t.accent, "--glow": t.glow, "--mote": t.mote,
       "--pattern": t.pattern, "--pattern-op": t.pop, "--blend": t.blend, "--pattern-size": t.size, "--mote-anim": t.anim })
       .forEach(([k, v]) => el.style.setProperty(k, v));
-    el.querySelector(".theme-name").textContent = t.name;
-    el.querySelectorAll(".dots i").forEach((d, i) => d.classList.toggle("on", i === state.theme[p]));
   }
 
   function render(p) {
@@ -331,24 +329,25 @@
     d.classList.add("show");
     clearTimeout(deltaTimers[p]);
     deltaTimers[p] = setTimeout(() => { d.classList.remove("show"); deltas[p] = 0; }, 1600);
-    app.classList.remove("show-hints");
   }
 
   function wire(panel, p) {
-    const flip = panel.classList.contains("flipped") ? -1 : 1;
     let start = null, holdTimer = null, repeatTimer = null, held = false, zone = null;
-
     const stopHold = () => { clearTimeout(holdTimer); clearInterval(repeatTimer); holdTimer = repeatTimer = null; };
-    const clearZone = () => { zone && zone.classList.remove("active"); zone = null; };
+
+    panel.querySelector(".cycle").addEventListener("click", () => {
+      state.theme[p] = (state.theme[p] + 1) % THEMES.length;
+      applyTheme(p); save(); buzz(12);
+    });
 
     panel.addEventListener("pointerdown", e => {
-      if (start) return;
+      if (start || e.target.closest(".cycle")) return;
       requestWakeLock();
+      zone = e.target.closest(".zone");
+      if (!zone) return;
       panel.setPointerCapture(e.pointerId);
       start = { x: e.clientX, y: e.clientY, id: e.pointerId };
       held = false;
-      zone = e.target.closest(".zone");
-      if (!zone) return;
       zone.classList.add("active");
       const step = zone.classList.contains("plus") ? 1 : -1;
       // Hold to keep counting, speeding up the longer you hold.
@@ -359,25 +358,16 @@
       }, 420);
     });
 
+    // Dragging away cancels a tap, so brushing the screen doesn't change life.
     panel.addEventListener("pointermove", e => {
-      if (!start || e.pointerId !== start.id) return;
-      if (Math.hypot(e.clientX - start.x, e.clientY - start.y) > 14 && !held) { stopHold(); clearZone(); }
+      if (!start || !zone || e.pointerId !== start.id || held) return;
+      if (Math.hypot(e.clientX - start.x, e.clientY - start.y) > 24) { stopHold(); zone.classList.remove("active"); zone = null; }
     });
 
     const end = e => {
       if (!start || e.pointerId !== start.id) return;
-      const dx = e.clientX - start.x, dy = e.clientY - start.y;
       stopHold();
-      if (e.type === "pointerup") {
-        if (!held && Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.4) {
-          const dir = (dx < 0 ? 1 : -1) * flip;
-          state.theme[p] = (state.theme[p] + dir + THEMES.length) % THEMES.length;
-          applyTheme(p); save(); buzz(15);
-          app.classList.remove("show-hints");
-        } else if (!held && zone) {
-          change(p, zone.classList.contains("plus") ? 1 : -1);
-        }
-      }
+      if (e.type === "pointerup" && !held && zone) change(p, zone.classList.contains("plus") ? 1 : -1);
       if (zone) { const z = zone; setTimeout(() => z.classList.remove("active"), 90); zone = null; }
       start = null;
     };
