@@ -17,6 +17,7 @@ Set the phone between the two players. Each half faces one player.
   - Colorless: Aether
 - **↺** (left of the center bar): tap it twice to start a new game.
 - **Medallion** (center): set the starting life (10 / 20 / 30 / 40), start a new game, or pick who goes first.
+- **Commander damage**: turn it on in the menu (it switches on automatically when you pick 40 life). Each player gets a ⚔ badge in their bottom-left corner showing the commander damage they've taken. Tap it and −/+ count commander damage instead of life; life goes down along with it, since commander damage is also life loss. Tap **Done**, or wait a few seconds, to go back. 21 or more from the opposing commander means you're defeated.
 - **Coin** (right of the center bar): randomly picks who goes first.
 
 Life totals and backgrounds are saved, so closing the app won't lose your game. The screen stays on while you play, on phones that support it.
